@@ -14,5 +14,6 @@ public class Fou extends Piece{
             return true;
         }
         else return false;
+
     }
 }

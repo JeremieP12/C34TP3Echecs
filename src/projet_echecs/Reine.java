@@ -17,4 +17,5 @@ public class Reine extends Piece{
         }
         return false;
     }
+
 }

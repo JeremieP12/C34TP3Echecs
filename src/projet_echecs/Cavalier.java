@@ -14,5 +14,6 @@ public class Cavalier extends Piece{
             return true;
         }
         else return false;
+
     }
 }

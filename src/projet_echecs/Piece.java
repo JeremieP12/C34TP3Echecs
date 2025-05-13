@@ -66,6 +66,7 @@ package projet_echecs;
         public abstract boolean estValide (Position depart, Position arrivee);
 
 
+
     }
 
 
