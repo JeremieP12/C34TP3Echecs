@@ -3,8 +3,8 @@ package projet_echecs;
 public class Roi extends Piece{
 
 
-    public Roi(String nom, String couleur) {
-        super(nom, couleur);
+    public Roi(String couleur) {
+        super("k", couleur);
     }
 
     @Override
