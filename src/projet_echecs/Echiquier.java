@@ -45,8 +45,18 @@ public class Echiquier implements MethodesEchiquier{
 
     @Override
     public boolean cheminPossible(Position depart, Position arrivee) {
-        if (!this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().estValide(arrivee,arrivee)){
+        Piece pieceDepart = this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase();
+        Piece pieceArrivee = this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase();
+        if (!pieceDepart.estValide(arrivee,arrivee)) {
             return false;
+        }
+        if (this.getCase(arrivee.getLigne(),arrivee.getColonne()).isOccupee()){
+            if (pieceArrivee.getCouleur().equals(pieceDepart.getCouleur())){
+                return false;
+            }
+        }
+        if (pieceDepart.getNom().charAt(0) == 'c'){
+            return true;
         }
     }
 
