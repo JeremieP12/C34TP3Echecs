@@ -47,17 +47,84 @@ public class Echiquier implements MethodesEchiquier{
     public boolean cheminPossible(Position depart, Position arrivee) {
         Piece pieceDepart = this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase();
         Piece pieceArrivee = this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase();
-        if (!pieceDepart.estValide(arrivee,arrivee)) {
+
+        if (!pieceDepart.estValide(depart,arrivee)) {
             return false;
         }
+
         if (this.getCase(arrivee.getLigne(),arrivee.getColonne()).isOccupee()){
             if (pieceArrivee.getCouleur().equals(pieceDepart.getCouleur())){
                 return false;
             }
         }
+
         if (pieceDepart.getNom().charAt(0) == 'c'){
             return true;
         }
+
+        boolean ligneAvance = true;
+        boolean colonneAvance = true;
+        if (arrivee.getLigne()-depart.getLigne()<0){ ligneAvance = false; }
+        if (arrivee.getColonne()-depart.getColonne()<0){ colonneAvance = false; }
+
+        int deplacement = Math.max(Math.abs(arrivee.getLigne() - depart.getLigne()),Math.abs(arrivee.getColonne() - depart.getColonne()));
+
+        if (depart.getLigne() != arrivee.getLigne() && depart.getColonne() != arrivee.getColonne()) {
+            for (int i = 1; i < deplacement-1; i++) {
+                if (ligneAvance && colonneAvance){
+                    if (this.getCase(depart.getLigne() + i, depart.getColonne() + i).isOccupee()) {
+                        return false;
+                    }
+                }
+                if (!ligneAvance && !colonneAvance){
+                    if (this.getCase(depart.getLigne() - i, depart.getColonne() - i).isOccupee()) {
+                        return false;
+                    }
+                }
+                if (ligneAvance && !colonneAvance){
+                    if (this.getCase(depart.getLigne() + i, depart.getColonne() - i).isOccupee()) {
+                        return false;
+                    }
+                }
+                if (!ligneAvance && colonneAvance){
+                    if (this.getCase(depart.getLigne() - i, depart.getColonne() + i).isOccupee()) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        if (depart.getColonne() == arrivee.getColonne() ) {
+            for (int i = 1; i < deplacement-1; i++) {
+                if (!ligneAvance){
+                    if (this.getCase(depart.getLigne() - i, depart.getColonne()).isOccupee()) {
+                        return false;
+                    }
+                }
+                if (ligneAvance){
+                    if (this.getCase(depart.getLigne() + i, depart.getColonne()).isOccupee()) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        if (depart.getLigne() == arrivee.getLigne() ) {
+            for (int i = 1; i < deplacement-1; i++) {
+                if (!colonneAvance){
+                    if (this.getCase(depart.getLigne(), depart.getColonne()-i).isOccupee()) {
+                        return false;
+                    }
+                }
+                if (colonneAvance){
+                    if (this.getCase(depart.getLigne(), depart.getColonne()+i).isOccupee()) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        return false;
     }
 
     @Override
