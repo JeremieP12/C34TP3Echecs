@@ -182,16 +182,20 @@ public class Echiquier implements MethodesEchiquier{
         }
         return false;
     }
-    public void promotion(Position arrivee){
-        if (this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase().getCouleur().equals("blanc")
-                && arrivee.getLigne() == 7){
-            nbReineBlanc++;
-            this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r"+nbReineBlanc,"blanc"));
-        }
-        if (this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase().getCouleur().equals("noir")
-                && arrivee.getLigne() == 0){
-            nbReineNoir++;
-            this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r"+nbReineNoir,"noir"));
+    public void promotion(Position depart,Position arrivee){
+        if (cheminPossible(depart,arrivee) || captureParUnPionPossible(depart,arrivee)) {
+            if (this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getCouleur().equals("blanc")
+                    && this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getNom().charAt(0) == 'p'
+                    && arrivee.getLigne() == 7) {
+                nbReineBlanc++;
+                this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r" + nbReineBlanc, "blanc"));
+            }
+            if (this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getCouleur().equals("noir")
+                    && this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getNom().charAt(0) == 'p'
+                    && arrivee.getLigne() == 0) {
+                nbReineNoir++;
+                this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r" + nbReineNoir, "noir"));
+            }
         }
     }
 
