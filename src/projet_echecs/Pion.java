@@ -28,9 +28,7 @@ public class Pion extends Piece{
         }
         return false;
     }
-    private boolean estValideNoir(Position depart, Position arrivee) {
-        int nbDeDeplacement = 1;
-
+    private static boolean estValideNoir(Position depart, Position arrivee) {
         if (depart.getColonne() == arrivee.getColonne()) {
             if (arrivee.getLigne() - depart.getLigne() == 1) {
                 return true;

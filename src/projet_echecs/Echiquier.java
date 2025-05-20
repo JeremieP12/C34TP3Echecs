@@ -2,12 +2,13 @@ package projet_echecs;
 
 public class Echiquier implements MethodesEchiquier{
 
-    private Case[][] location ;
+    private Case[][] location;
 
     public Echiquier(){
+        this.location =  new Case[8][8];
         for (int i = 0;i < 8;i++){
             for (int j = 0;j<8;j++){
-                this.location = new Case[i][j];
+                this.location[i][j] = new Case();
             }
         }
     }
@@ -48,6 +49,8 @@ public class Echiquier implements MethodesEchiquier{
         Piece pieceDepart = this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase();
         Piece pieceArrivee = this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase();
 
+        if (arrivee.getLigne() == depart.getLigne() && arrivee.getColonne() == depart.getColonne() ){ return true; }
+
         if (!pieceDepart.estValide(depart,arrivee)) {
             return false;
         }
@@ -62,6 +65,11 @@ public class Echiquier implements MethodesEchiquier{
             return true;
         }
 
+        if (pieceDepart.getNom().charAt(0) == 'p' && this.getCase(arrivee.getLigne(), arrivee.getColonne()).isOccupee())
+        {
+            return false;
+        }
+
         boolean ligneAvance = true;
         boolean colonneAvance = true;
         if (arrivee.getLigne()-depart.getLigne()<0){ ligneAvance = false; }
@@ -69,8 +77,38 @@ public class Echiquier implements MethodesEchiquier{
 
         int deplacement = Math.max(Math.abs(arrivee.getLigne() - depart.getLigne()),Math.abs(arrivee.getColonne() - depart.getColonne()));
 
+        if (depart.getColonne() == arrivee.getColonne()) {
+            for (int i = 1; i <= deplacement-1; i++) {
+                if (!ligneAvance){
+                    if (this.getCase(depart.getLigne() - i, depart.getColonne()).isOccupee()) {
+                        return false;
+                    }
+                }
+                if (ligneAvance){
+                    if (this.getCase(depart.getLigne() + i, depart.getColonne()).isOccupee()) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        if (depart.getLigne() == arrivee.getLigne() ) {
+            for (int i = 1; i <= deplacement-1; i++) {
+                if (!colonneAvance){
+                    if (this.getCase(depart.getLigne(), depart.getColonne()-i).isOccupee()) {
+                        return false;
+                    }
+                }
+                if (colonneAvance){
+                    if (this.getCase(depart.getLigne(), depart.getColonne()+i).isOccupee()) {
+                        return false;
+                    }
+                }
+
+            }
+        }
         if (depart.getLigne() != arrivee.getLigne() && depart.getColonne() != arrivee.getColonne()) {
-            for (int i = 1; i < deplacement-1; i++) {
+            for (int i = 1; i <= deplacement-1; i++) {
                 if (ligneAvance && colonneAvance){
                     if (this.getCase(depart.getLigne() + i, depart.getColonne() + i).isOccupee()) {
                         return false;
@@ -94,41 +132,50 @@ public class Echiquier implements MethodesEchiquier{
 
             }
         }
-        if (depart.getColonne() == arrivee.getColonne() ) {
-            for (int i = 1; i < deplacement-1; i++) {
-                if (!ligneAvance){
-                    if (this.getCase(depart.getLigne() - i, depart.getColonne()).isOccupee()) {
-                        return false;
-                    }
-                }
-                if (ligneAvance){
-                    if (this.getCase(depart.getLigne() + i, depart.getColonne()).isOccupee()) {
-                        return false;
-                    }
-                }
+        return true;
+    }
 
+    @Override
+    public boolean captureParUnPionPossible(Position depart, Position arrivee) {
+        if (this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().getCouleur().equalsIgnoreCase("blanc")){
+            return captureParUnPionPossibleBlanc(depart,arrivee);
+        }
+        else return captureParUnPionPossibleNoir(depart,arrivee);
+    }
+
+    private boolean captureParUnPionPossibleBlanc(Position depart,Position arrivee){
+        if (arrivee.getLigne() == depart.getLigne()-1 && arrivee.getColonne() == depart.getColonne()-1 ) {
+            if (this.getCase(depart.getLigne() - 1, depart.getColonne() - 1).isOccupee()) {
+                if (this.getCase(depart.getLigne() - 1, depart.getColonne() - 1).getPieceSurCase().getCouleur().equals("noir")) {
+                    return true;
+                }
             }
         }
-        if (depart.getLigne() == arrivee.getLigne() ) {
-            for (int i = 1; i < deplacement-1; i++) {
-                if (!colonneAvance){
-                    if (this.getCase(depart.getLigne(), depart.getColonne()-i).isOccupee()) {
-                        return false;
-                    }
+        if (arrivee.getLigne() == depart.getLigne()-1 && arrivee.getColonne() == depart.getColonne()+1 ) {
+            if (this.getCase(depart.getLigne() - 1, depart.getColonne() + 1).isOccupee()) {
+                if (this.getCase(depart.getLigne() - 1, depart.getColonne() + 1).getPieceSurCase().getCouleur().equals("noir")) {
+                    return true;
                 }
-                if (colonneAvance){
-                    if (this.getCase(depart.getLigne(), depart.getColonne()+i).isOccupee()) {
-                        return false;
-                    }
-                }
-
             }
         }
         return false;
     }
 
-    @Override
-    public boolean captureParUnPionPossible(Position depart, Position arrivee) {
+    private boolean captureParUnPionPossibleNoir(Position depart, Position arrivee){
+        if (arrivee.getLigne() == depart.getLigne()+1 && arrivee.getColonne() == depart.getColonne()-1 ) {
+            if (this.getCase(depart.getLigne() + 1, depart.getColonne() - 1).isOccupee()) {
+                if (this.getCase(depart.getLigne() + 1, depart.getColonne() - 1).getPieceSurCase().getCouleur().equals("blanc")) {
+                    return true;
+                }
+            }
+        }
+        if (arrivee.getLigne() == depart.getLigne()+1 && arrivee.getColonne() == depart.getColonne()+1 ) {
+            if (this.getCase(depart.getLigne() + 1, depart.getColonne() + 1).isOccupee()) {
+                if (this.getCase(depart.getLigne() + 1, depart.getColonne() + 1).getPieceSurCase().getCouleur().equals("blanc")) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }
