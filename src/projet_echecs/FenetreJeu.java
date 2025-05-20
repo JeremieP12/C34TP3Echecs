@@ -19,6 +19,7 @@ import java.awt.event.*;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 
 public class FenetreJeu extends JFrame {
     private Echiquier e;        //echiquier
@@ -83,10 +84,28 @@ public class FenetreJeu extends JFrame {
 
 
                 // 1. attribuer couleur aux JLabels
+                if ((i+j) % 2 != 0) {
+                    tab[i][j].setBackground(Color.DARK_GRAY);
+                }
+                else {
+                    tab[i][j].setBackground(Color.LIGHT_GRAY);
+                }
             }
         }
 
         //2. deux nouveaux panels pour les pi�ces captur�es
+
+        panelNoir = new JPanel(new FlowLayout());
+        panelNoir.setBackground(new Color(5,5,5,160));
+        panelNoir.setBorder(new LineBorder(new Color(0,0,0),1,true));
+        panelNoir.setBounds(new Rectangle(572,65,100,465));
+        this.getContentPane().add(panelNoir);
+        panelBlanc = new JPanel(new FlowLayout());
+        panelBlanc.setBackground(new Color(255,255,255,170));
+        panelBlanc.setBorder(new LineBorder(new Color(0,0,0),1,true));
+        panelBlanc.setBounds(new Rectangle(680,65,100,465));
+        this.getContentPane().add(panelBlanc);
+
     }
 
     // classe priv�e pour la gestion d'�v�nements
@@ -105,7 +124,30 @@ public class FenetreJeu extends JFrame {
             if (eve.getSource() == boutonDebuter) {
                 // 3.quoi faire ?
                 // attribuer les icones aux JLabels
-                champTexte.setText("C'est aux " + couleurControle + "s � jouer ");
+                e.debuter();
+
+                tab[0][0].setIcon(new ImageIcon("Icones\\TN.gif"));
+                tab[0][1].setIcon(new ImageIcon("Icones\\CN.gif"));
+                tab[0][2].setIcon(new ImageIcon("Icones\\FN.gif"));
+                tab[0][3].setIcon(new ImageIcon("Icones\\DN.gif"));
+                tab[0][4].setIcon(new ImageIcon("Icones\\RN.gif"));
+                tab[0][5].setIcon(new ImageIcon("Icones\\FN.gif"));
+                tab[0][6].setIcon(new ImageIcon("Icones\\CN.gif"));
+                tab[0][7].setIcon(new ImageIcon("Icones\\TN.gif"));
+                tab[7][0].setIcon(new ImageIcon("Icones\\TB.gif"));
+                tab[7][1].setIcon(new ImageIcon("Icones\\CB.gif"));
+                tab[7][2].setIcon(new ImageIcon("Icones\\FB.gif"));
+                tab[7][3].setIcon(new ImageIcon("Icones\\DB.gif"));
+                tab[7][4].setIcon(new ImageIcon("Icones\\RB.gif"));
+                tab[7][5].setIcon(new ImageIcon("Icones\\FB.gif"));
+                tab[7][6].setIcon(new ImageIcon("Icones\\CB.gif"));
+                tab[7][7].setIcon(new ImageIcon("Icones\\TB.gif"));
+                for (int i = 0; i < 8; i++) {
+                    tab[1][i].setIcon(new ImageIcon("Icones\\PN.gif"));
+                    tab[6][i].setIcon(new ImageIcon("Icones\\PB.gif"));
+                }
+
+                champTexte.setText("C'est le tour des " + couleurControle + "s");
             }
 
 
@@ -118,17 +160,46 @@ public class FenetreJeu extends JFrame {
                         if (eve.getSource() == tab[i][j]) {
                             ligneClic = i;
                             colonneClic = j;
+                            System.out.println("Case ("+i+","+j+")");
                         }
                     }
                 }
                 //5. votre travail
+                if(e.getCase(ligneClic,colonneClic).isOccupee() && pieceTampon==null){
+                    depart = new Position(ligneClic,colonneClic);
+                    iconeTampon = (ImageIcon) tab[ligneClic][colonneClic].getIcon();
+                    pieceTampon = e.getCase(ligneClic,colonneClic).getPieceSurCase();
+                    tab[ligneClic][colonneClic].setIcon(null);
+                }
+                else if (!e.getCase(ligneClic,colonneClic).isOccupee() && pieceTampon!=null) {
+                    arrivee = new Position(ligneClic,colonneClic);
+                    if (e.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().estValide(depart,arrivee)){
+                        if (e.cheminPossible(depart,arrivee)){
+                            //promotion
+                            e.getCase(ligneClic,colonneClic).setPieceSurCase(pieceTampon);
+                            pieceTampon = null;
+                            e.getCase(depart.getLigne(),depart.getColonne()).retirerPieceCase();
 
+                            tab[ligneClic][colonneClic].setIcon(iconeTampon);
+                            iconeTampon = null;
 
+                            alterne();
+                        }
+                    }
+                }
             } // du grand else
         } // de la m�thode mouseReleased
 
-
+        public void alterne(){
+            if (couleurControle.equals("blanc")){
+                couleurControle = "noir";
+            }
+            else {
+                couleurControle = "blanc";
+            }
+        }
     } // de la classe de gestion
+
 
 
     // main pour pouvoir ex�cuter l'interface graphique

@@ -53,7 +53,12 @@ public class Echiquier implements MethodesEchiquier{
         Piece pieceDepart = this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase();
         Piece pieceArrivee = this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase();
 
-        if (arrivee.getLigne() == depart.getLigne() && arrivee.getColonne() == depart.getColonne() ){ return true; }
+        if (arrivee.getLigne() == depart.getLigne() && arrivee.getColonne() == depart.getColonne() ){
+            return true;
+        }
+        if (this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().getNom().charAt(0) == 'p'){
+            if (captureParUnPionPossible(depart,arrivee)){ return true; }
+        }
 
         if (!pieceDepart.estValide(depart,arrivee)) {
             return false;
