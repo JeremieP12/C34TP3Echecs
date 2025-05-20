@@ -4,6 +4,9 @@ public class Echiquier implements MethodesEchiquier{
 
     private Case[][] location;
 
+    private static int nbReineNoir = 1;
+    private static int nbReineBlanc = 1;
+
     public Echiquier(){
         this.location =  new Case[8][8];
         for (int i = 0;i < 8;i++){
@@ -18,7 +21,7 @@ public class Echiquier implements MethodesEchiquier{
         this.getCase(0,0).setPieceSurCase(new Tour("t1","noir"));
         this.getCase(0,1).setPieceSurCase(new Cavalier("c1","noir"));
         this.getCase(0,2).setPieceSurCase(new Fou("f1","noir"));
-        this.getCase(0,3).setPieceSurCase(new Reine("r1","noir"));
+        this.getCase(0,3).setPieceSurCase(new Reine("r"+nbReineNoir,"noir"));
         this.getCase(0,4).setPieceSurCase(new Roi("noir"));
         this.getCase(0,5).setPieceSurCase(new Fou("f2","noir"));
         this.getCase(0,6).setPieceSurCase(new Cavalier("c2","noir"));
@@ -26,15 +29,16 @@ public class Echiquier implements MethodesEchiquier{
         this.getCase(7,0).setPieceSurCase(new Tour("t1","blanc"));
         this.getCase(7,1).setPieceSurCase(new Cavalier("c1","blanc"));
         this.getCase(7,2).setPieceSurCase(new Fou("f1","blanc"));
-        this.getCase(7,3).setPieceSurCase(new Reine("r1","blanc"));
+        this.getCase(7,3).setPieceSurCase(new Reine("r"+nbReineBlanc,"blanc"));
         this.getCase(7,4).setPieceSurCase(new Roi("blanc"));
         this.getCase(7,5).setPieceSurCase(new Fou("f2","blanc"));
         this.getCase(7,6).setPieceSurCase(new Cavalier("c2","blanc"));
         this.getCase(7,7).setPieceSurCase(new Tour("t2","blanc"));
-
+        int compteurPion = 1;
         for (int i = 0; i < 8; i++) {
-            this.getCase(1,i).setPieceSurCase(new Pion("p"+i,"noir"));
-            this.getCase(6,i).setPieceSurCase(new Pion("p"+i,"blanc"));
+            this.getCase(1,i).setPieceSurCase(new Pion("p"+compteurPion,"noir"));
+            this.getCase(6,i).setPieceSurCase(new Pion("p"+compteurPion,"blanc"));
+            compteurPion++;
         }
 
     }
@@ -178,4 +182,57 @@ public class Echiquier implements MethodesEchiquier{
         }
         return false;
     }
+    public void promotion(Position arrivee){
+        if (this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase().getCouleur().equals("blanc")
+                && arrivee.getLigne() == 7){
+            nbReineBlanc++;
+            this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r"+nbReineBlanc,"blanc"));
+        }
+        if (this.getCase(arrivee.getLigne(),arrivee.getColonne()).getPieceSurCase().getCouleur().equals("noir")
+                && arrivee.getLigne() == 0){
+            nbReineNoir++;
+            this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r"+nbReineNoir,"noir"));
+        }
+    }
+
+    public boolean roqueEstPossible(Position depart,Position arrivee){
+        if (this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().getNom().equals("k")){
+            if (this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().getCouleur().equals("blanc")){
+                if (depart.getLigne()==7 && depart.getColonne()==4){
+                    if (arrivee.getLigne()==7 && arrivee.getColonne()==6){
+                        if (this.getCase(7,7).getPieceSurCase().getNom().charAt(0) == 't'
+                                && this.getCase(7,7).getPieceSurCase().getCouleur().equals("blanc")){
+                            return true;
+                        }
+                    }
+                    else if (arrivee.getLigne()==7 && arrivee.getColonne()==2) {
+                        if (this.getCase(7,0).getPieceSurCase().getNom().charAt(0) == 't'
+                                && this.getCase(7,0).getPieceSurCase().getCouleur().equals("blanc")){
+                            return true;
+                        }
+
+                    }
+                }
+            }
+            if (this.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().getCouleur().equals("noir")){
+                if (depart.getLigne()==0 && depart.getColonne()==4){
+                    if (arrivee.getLigne()==0 && arrivee.getColonne()==6){
+                        if (this.getCase(0,7).getPieceSurCase().getNom().charAt(0) == 't'
+                                && this.getCase(0,7).getPieceSurCase().getCouleur().equals("noir")){
+                            return true;
+                        }
+                    }
+                    else if (arrivee.getLigne()==0 && arrivee.getColonne()==2) {
+                        if (this.getCase(0,0).getPieceSurCase().getNom().charAt(0) == 't'
+                                && this.getCase(0,0).getPieceSurCase().getCouleur().equals("noir")){
+                            return true;
+                        }
+
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 }

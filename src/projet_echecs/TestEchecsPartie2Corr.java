@@ -272,5 +272,5 @@ Echiquier e;
     Position depart = new Position (1,1);
     Position arrivee = new Position (2,0);
     assertEquals( false,e.captureParUnPionPossible(depart, arrivee));
-  } 
+  }
 }
