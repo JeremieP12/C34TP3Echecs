@@ -4,8 +4,8 @@ public class Echiquier implements MethodesEchiquier{
 
     private Case[][] location;
 
-    private static int nbReineNoir = 1;
-    private static int nbReineBlanc = 1;
+    private int nbReineNoir = 1;
+    private int nbReineBlanc = 1;
 
     public Echiquier(){
         this.location =  new Case[8][8];
@@ -187,21 +187,20 @@ public class Echiquier implements MethodesEchiquier{
         }
         return false;
     }
-    public void promotion(Position depart,Position arrivee){
+    public boolean verifierPromotion(Position depart, Position arrivee){
         if (cheminPossible(depart,arrivee) || captureParUnPionPossible(depart,arrivee)) {
             if (this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getCouleur().equals("blanc")
                     && this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getNom().charAt(0) == 'p'
                     && arrivee.getLigne() == 7) {
-                nbReineBlanc++;
-                this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r" + nbReineBlanc, "blanc"));
+                return true;
             }
             if (this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getCouleur().equals("noir")
                     && this.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().getNom().charAt(0) == 'p'
                     && arrivee.getLigne() == 0) {
-                nbReineNoir++;
-                this.getCase(arrivee.getLigne(), arrivee.getColonne()).setPieceSurCase(new Reine("r" + nbReineNoir, "noir"));
+                return true;
             }
         }
+        return false;
     }
 
     public boolean roqueEstPossible(Position depart,Position arrivee){
@@ -242,6 +241,22 @@ public class Echiquier implements MethodesEchiquier{
             }
         }
         return false;
+    }
+
+    public int getNbReineNoir() {
+        return nbReineNoir;
+    }
+
+    public void setNbReineNoir(int nbReineNoir) {
+        this.nbReineNoir = nbReineNoir;
+    }
+
+    public int getNbReineBlanc() {
+        return nbReineBlanc;
+    }
+
+    public void setNbReineBlanc(int nbReineBlanc) {
+        this.nbReineBlanc = nbReineBlanc;
     }
 
 }

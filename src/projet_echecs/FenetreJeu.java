@@ -1,41 +1,29 @@
 package projet_echecs;
 
-import javax.swing.JFrame;
-
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
-
-import java.awt.Rectangle;
-
-import javax.swing.BorderFactory;
-import javax.swing.border.EtchedBorder;
-
-import java.awt.*;
-
 import javax.swing.*;
-
-import java.awt.event.*;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FenetreJeu extends JFrame {
-    private Echiquier e;        //echiquier
-    private JLabel[][] tab;     //tableau de JLabels
 
-    private JPanel panelControle = new JPanel();    // panel du haut
-    private JPanel panelGrille = new JPanel();      // panel du bas (grille)
+    private Echiquier e;        //echiquier
+    private JLabel[][] tab;    //tableau de JLabels
+
+    private JPanel panelControle = new JPanel();  // panel du haut
+    private JPanel panelGrille = new JPanel();  // panel du bas ( grille )
     GridLayout gridLayout1 = new GridLayout();
 
     private JButton boutonDebuter = new JButton();
     private JTextField champTexte = new JTextField();
     private JButton boutonReset = new JButton();
 
-    private JPanel panelNoir, panelBlanc; // panels oï¿½ on placera les pieces capturï¿½es
+    private JPanel panelNoir, panelBlanc; // panels où on placera les pieces capturées
 
-    public FenetreJeu() {   // constructeur appelle mï¿½thode JBInit
+    public FenetreJeu()   // constructeur appelle méthode JBInit
+    {
         try {
             jbInit();
         } catch (Exception e) {
@@ -44,8 +32,10 @@ public class FenetreJeu extends JFrame {
     }
 
     private void jbInit() throws Exception {
-        tab = new JLabel[8][8];   // crï¿½ation du tableau de JLabel
-        e = new Echiquier();      // crï¿½ation de l'ï¿½chiquier
+
+
+        tab = new JLabel[8][8];   // création du tableau de JLabel
+        e = new Echiquier();      // création de l'échiquier
 
 
         this.getContentPane().setLayout(null);
@@ -67,65 +57,59 @@ public class FenetreJeu extends JFrame {
         boutonDebuter.setBounds(new Rectangle(15, 10, 130, 25));
         boutonDebuter.setText("DEBUTER");
         champTexte.setBounds(new Rectangle(160, 10, 215, 25));
+
+        // les écouteurs
         boutonReset.setText("RESET");
         boutonReset.setBounds(new Rectangle(390, 10, 130, 25));
-
-        // les ï¿½couteurs (listners)
         GestionnaireEvenement gest = new GestionnaireEvenement();
         boutonDebuter.addMouseListener(gest);
         boutonReset.addMouseListener(gest);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                tab[i][j] = new JLabel();    // crï¿½ation du JLabel
+                tab[i][j] = new JLabel(); // création du JLabel
                 panelGrille.add(tab[i][j]);  // ajouter au Panel
                 tab[i][j].setOpaque(true);
                 tab[i][j].setHorizontalAlignment(SwingConstants.CENTER);  // pour que les pieces apparaissent au centre de la case
-                tab[i][j].addMouseListener(gest);  // ajouter l'ï¿½couteur aux sources
-
-
+                tab[i][j].addMouseListener(gest);  // ajouter l'écouteur aux sources
                 // 1. attribuer couleur aux JLabels
-                if ((i+j) % 2 != 0) {
-                    tab[i][j].setBackground(Color.DARK_GRAY);
-                }
-                else {
+                if ((i + j) % 2 == 0) {
                     tab[i][j].setBackground(Color.LIGHT_GRAY);
+                } else {
+                    tab[i][j].setBackground(Color.DARK_GRAY);
                 }
             }
         }
-
-        //2. deux nouveaux panels pour les piï¿½ces capturï¿½es
-
+        //2. deux nouveaux panels pour les pièces capturées
         panelNoir = new JPanel(new FlowLayout());
-        panelNoir.setBackground(new Color(5,5,5,160));
-        panelNoir.setBorder(new LineBorder(new Color(0,0,0),1,true));
-        panelNoir.setBounds(new Rectangle(572,65,100,465));
+        panelNoir.setBackground(new Color(5, 5, 5, 160));
+        panelNoir.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        panelNoir.setBounds(new Rectangle(572, 65, 100, 465));
         this.getContentPane().add(panelNoir);
-        panelBlanc = new JPanel(new FlowLayout());
-        panelBlanc.setBackground(new Color(255,255,255,170));
-        panelBlanc.setBorder(new LineBorder(new Color(0,0,0),1,true));
-        panelBlanc.setBounds(new Rectangle(680,65,100,465));
-        this.getContentPane().add(panelBlanc);
 
+        panelBlanc = new JPanel(new FlowLayout());
+        panelBlanc.setBackground(new Color(255, 250, 250, 170));
+        panelBlanc.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        panelBlanc.setBounds(new Rectangle(680, 65, 100, 465));
+        this.getContentPane().add(panelBlanc);
     }
 
-    // classe privï¿½e pour la gestion d'ï¿½vï¿½nements
+    // classe privée pour la gestion d'Événements
     private class GestionnaireEvenement extends MouseAdapter {
 
         Piece pieceTampon;
         ImageIcon iconeTampon;
-        int ligneClic;
-        int colonneClic;
+        int ligneClic; // ligne où on a cliqué
+        int colonneClic; // colonne où on a cliqué
         Position depart, arrivee;
         String couleurControle = "blanc";
 
 
         public void mouseReleased(MouseEvent eve) {
-            // si on clique sur le bouton dï¿½buter
+            // si on clique sur le bouton débuter
             if (eve.getSource() == boutonDebuter) {
                 // 3.quoi faire ?
-                // attribuer les icones aux JLabels
+                // Attribuer les icones aux JLabels (pièces autres que Pions)
                 e.debuter();
-
                 tab[0][0].setIcon(new ImageIcon("Icones\\TN.gif"));
                 tab[0][1].setIcon(new ImageIcon("Icones\\CN.gif"));
                 tab[0][2].setIcon(new ImageIcon("Icones\\FN.gif"));
@@ -142,44 +126,88 @@ public class FenetreJeu extends JFrame {
                 tab[7][5].setIcon(new ImageIcon("Icones\\FB.gif"));
                 tab[7][6].setIcon(new ImageIcon("Icones\\CB.gif"));
                 tab[7][7].setIcon(new ImageIcon("Icones\\TB.gif"));
+                // Attribuer les icones de Pions aux JLabels
                 for (int i = 0; i < 8; i++) {
                     tab[1][i].setIcon(new ImageIcon("Icones\\PN.gif"));
                     tab[6][i].setIcon(new ImageIcon("Icones\\PB.gif"));
                 }
-
-                champTexte.setText("C'est le tour des " + couleurControle + "s");
+                champTexte.setText("C'est aux " + couleurControle + "s à jouer ");
             }
-
 
             // si on clique sur le bouton reset
             else if (eve.getSource() == boutonReset) {
-                //4. votre travail
-            } else { // donc on a cliquï¿½ sur un Label
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        e.getCase(i,j).retirerPieceCase();
+                        tab[i][j].setIcon(null);
+                    }
+                }
+                pieceTampon = null;
+                iconeTampon = null;
+                couleurControle = "blanc";
+
+            } else { // donc on a cliqué sur un Label
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         if (eve.getSource() == tab[i][j]) {
                             ligneClic = i;
                             colonneClic = j;
-                            System.out.println("Case ("+i+","+j+")");
+                            System.out.println("Clic (" + i + "," + j + ")");
                         }
                     }
                 }
-                //5. votre travail
-                if(e.getCase(ligneClic,colonneClic).isOccupee() && pieceTampon==null){
-                    depart = new Position(ligneClic,colonneClic);
-                    iconeTampon = (ImageIcon) tab[ligneClic][colonneClic].getIcon();
-                    pieceTampon = e.getCase(ligneClic,colonneClic).getPieceSurCase();
-                    tab[ligneClic][colonneClic].setIcon(null);
-                }
-                else if (!e.getCase(ligneClic,colonneClic).isOccupee() && pieceTampon!=null) {
-                    arrivee = new Position(ligneClic,colonneClic);
-                    if (e.getCase(depart.getLigne(),depart.getColonne()).getPieceSurCase().estValide(depart,arrivee)){
-                        if (e.cheminPossible(depart,arrivee)){
-                            //promotion
-                            e.getCase(ligneClic,colonneClic).setPieceSurCase(pieceTampon);
-                            pieceTampon = null;
-                            e.getCase(depart.getLigne(),depart.getColonne()).retirerPieceCase();
 
+                //5. votre travail
+
+                // 1cas : clique sur une case occupée et que le tampon est vide -->cas départ
+                if (e.getCase(ligneClic, colonneClic).isMemeCouleur(couleurControle) && pieceTampon == null) {
+                    //initialiser position depart
+                    depart = new Position(ligneClic, colonneClic);
+                    //prendre l'icone et la mettre dans le tampon, prendre la piece et la mettre dans le tampon
+                    iconeTampon = (ImageIcon) tab[ligneClic][colonneClic].getIcon();
+                    pieceTampon = e.getCase(ligneClic, colonneClic).getPieceSurCase();
+                    //enlever le tampon de la place d'origine pas la piece
+                    tab[ligneClic][colonneClic].setIcon(null);
+
+                }
+                // 2e cas : clique sur une case vide; tampon plein cas d'arrivee, pas de pion en diagonale
+                else if (!e.getCase(ligneClic, colonneClic).isOccupee() && pieceTampon != null) {
+                    //initialiser position d'arrivee
+                    arrivee = new Position(ligneClic, colonneClic);
+                    //verfier estValide, exclue les pions en diagonales
+                    if (e.getCase(depart.getLigne(), depart.getColonne()).getPieceSurCase().estValide(depart, arrivee)) {
+                        // verifier cheminPossible
+                        if (e.cheminPossible(depart, arrivee)) {
+
+
+                        if (e.verifierPromotion(depart, arrivee))
+                        {
+                            if ( pieceTampon.getCouleur() =="noir")
+                            {
+                                //changer l'IconeTampon pour une reine
+                                iconeTampon =  new ImageIcon ("Icones\\DN.gif");
+
+                                //changer la pieceTampon pour une Reine
+                                pieceTampon = new Reine("r1", "noir");
+                            }
+                            else
+                            {
+                                //changer l'IconeTampon pour une reine
+                                iconeTampon =  new ImageIcon ("Icones\\DB.gif");
+
+                                //changer la pieceTampon pour une Reine
+                                pieceTampon = new Reine("r1", "blanc");
+                            }
+                        }
+
+                            //clean : enlever la piece du tampon et la mettre sur l'arrivee
+                            e.getCase(ligneClic, colonneClic).setPieceSurCase(pieceTampon);
+
+                            pieceTampon = null;
+                            //enlever la piece de sa place d'origine
+                            e.getCase(depart.getLigne(), depart.getColonne()).retirerPieceCase();
+
+                            // l'enlever du tampon
                             tab[ligneClic][colonneClic].setIcon(iconeTampon);
                             iconeTampon = null;
 
@@ -187,22 +215,34 @@ public class FenetreJeu extends JFrame {
                         }
                     }
                 }
-            } // du grand else
-        } // de la mï¿½thode mouseReleased
+                else if(e.getCase(ligneClic,colonneClic) == e.getCase(depart.getLigne(),depart.getColonne())){
+                    e.getCase(ligneClic,colonneClic).setPieceSurCase(pieceTampon);
+                    tab[ligneClic][colonneClic].setIcon(iconeTampon);
+                    pieceTampon = null;
+                    iconeTampon = null;
+                }
 
-        public void alterne(){
-            if (couleurControle.equals("blanc")){
-                couleurControle = "noir";
+                // 3e cas : clique sur une case occupee et tampon plein : case d arrivee + pion en diagonale ( peut-etre piece qui ne bouge pas )
+
+
+                }
+                // du grand else
+            } // de la méthode mouseReleased
+
+
+            private void alterne() {
+            if (this.couleurControle.equals("blanc")) {
+                this.couleurControle = "noir";
+            } else {
+                this.couleurControle = "blanc";
             }
-            else {
-                couleurControle = "blanc";
-            }
+            champTexte.setText("C'est aux " + couleurControle + "s à jouer ");
         }
-    } // de la classe de gestion
+    }
+    //de la classe de gestion
 
 
-
-    // main pour pouvoir exï¿½cuter l'interface graphique
+    // main pour pouvoir exécuter l'interface graphique
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -222,3 +262,4 @@ public class FenetreJeu extends JFrame {
         });
     }
 }
+

@@ -12,7 +12,7 @@ public class Reine extends Piece{
         if (depart.getLigne() == arrivee.getLigne() || depart.getColonne() == arrivee.getColonne()){
             return true;
         }
-        if (arrivee.getLigne()-depart.getLigne() == arrivee.getColonne() - depart.getColonne()) {
+        if (Math.abs(arrivee.getLigne()-depart.getLigne())  == Math.abs(arrivee.getColonne() - depart.getColonne())) {
             return true;
         }
         return false;
